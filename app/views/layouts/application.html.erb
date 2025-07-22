@@ -31,10 +31,14 @@
 
     <div class="container">
 
-    <%= alert %>
+      <% if notice.present? %>
+        <%= render partial: "shared/flash", locals: { message: notice, css_class: "success" } %>
+      <% end %>
 
-    <%= notice%>
-    <%= yield %>
+      <% if alert.present? %>
+        <%= render partial: "shared/flash", locals: { message: alert, css_class: "danger" } %>
+      <% end %>
+      <%= yield %>
     </div>
   </body>
 </html>
