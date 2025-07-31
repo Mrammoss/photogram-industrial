@@ -20,20 +20,19 @@
 #  fk_rails_...  (owner_id => users.id)
 #
 class Photo < ApplicationRecord
-
-mount_uploader :image, ImageUploader
+  mount_uploader :image, ImageUploader
 
   belongs_to :owner, class_name: "User", counter_cache: true
   has_many :comments
-  
+
   has_many :likes
   has_many :fans, through: :likes
 
   validates :caption, presence: true
   validates :image, presence: true
 
-  scope :past_week, -> { where(created_at: 1.week.ago...)}
-  scope :by_likes, -> { order(likes_count: :desc)}
+  scope :past_week, -> { where(created_at: 1.week.ago...) }
+  scope :by_likes, -> { order(likes_count: :desc) }
 
-  scope :latest, -> { order(created_at: :desc)}
+  scope :latest, -> { order(created_at: :desc) }
 end
