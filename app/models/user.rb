@@ -32,16 +32,16 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
-
   mount_uploader :avatar_image, ImageUploader
 
   has_many :comments, foreign_key: "author_id"
 
   has_many :sent_follow_requests, foreign_key: :sender_id, class_name: "FollowRequest"
-  has_many :accepted_sent_follow_requests, -> { accepted}, foreign_key: :sender_id, class_name: "FollowRequest"
+  has_many :accepted_sent_follow_requests, -> { accepted }, foreign_key: :sender_id, class_name: "FollowRequest"
 
   has_many :received_follow_requests, foreign_key: :recipient_id, class_name: "FollowRequest"
-  has_many :accepted_received_follow_requests, -> {accepted}, foreign_key: :recipient_id, class_name: "FollowRequest"
+  has_many :accepted_received_follow_requests, -> { accepted }, foreign_key: :recipient_id, class_name: "FollowRequest"
+  has_many :pending_received_follow_requests, -> { pending }, foreign_key: :recipient_id, class_name: "FollowRequest"
 
   has_many :likes, foreign_key: :fan_id
 
@@ -55,7 +55,13 @@ class User < ApplicationRecord
 
   has_many :feed, through: :leaders, source: :own_photos
 
-  has_many :discover, -> {distinct}, through: :leaders, source: :liked_photos
+  has_many :discover, -> { distinct }, through: :leaders, source: :liked_photos
 
   validates :username, presence: true, uniqueness: true
+
+  has_many :received_follow_requests, class_name: "FollowRequest", foreign_key: "recipient_id"
+
+  def pending
+    received_follow_requests.pending
+  end
 end
